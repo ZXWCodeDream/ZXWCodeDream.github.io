@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>geek</title>
+  
+  <subtitle>Today a leader,tomorrow a leader</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2019-04-04T03:10:17.065Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>zhengxingwang</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://yoursite.com/2019/04/04/hashMap%E7%B1%BBcompute%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3%E5%8F%8A%E6%A0%B7%E4%BE%8B/"/>
+    <id>http://yoursite.com/2019/04/04/hashMap类compute方法详解及样例/</id>
+    <published>2019-04-04T03:10:17.065Z</published>
+    <updated>2019-04-04T03:10:17.065Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="hashMap简介"><a href="#hashMap简介" class="headerlink" title="hashMap简介"></a>hashMap简介</h2><p> hashMap是基于Map的实现，并且允许null value和null key,它不保证存储的数据的顺序。特别要注意的是hashMap不是同步的，要实现同步除了在外部实现同步外，还可以通过Map m = Collections.synchronizedMap(new HashMap())或者使用ConcurrentHashMap类。<strong>(面试常问)</strong></p><h2 id="compute-key-BiFunction-方法介绍"><a href="#compute-key-BiFunction-方法介绍" class="headerlink" title="compute(key,BiFunction)方法介绍"></a>compute(key,BiFunction)方法介绍</h2><p>  Jdk1.8 API</p><blockquote><p>Attempts to compute a mapping for the specified key and its current mapped value (or null if there is no current mapping)</p></blockquote><p>计算指定键关联的映射值（没有映射值设置null），主要就是将BIFunction的结果值赋予key关联的映射值</p><blockquote><p>public V compute(K key,BiFunction&lt;? super K,? super V, ? extends V&gt; remappingFunction)</p></blockquote><p>Parameters:接受两个参数</p><ul><li>key：关联value的key</li><li>remappingFunction: 函数计算值</li></ul><p>Returns:返回更新后的该key映射的value值，若key没有映射的value值，则返回null</p><h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul><li>如果BiFunction()返回的结果为null，原先存在的key-value将从map中移除,本身就没有，则还是没有。</li><li>如果重映射函数内抛出异常，这个异常会被继续抛出，映射值不会发送改变</li><li>如果重映射方法在计算期间修改修改此映射，该实现方法是不能确保检测出错误。</li></ul><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>看下代码演示样例基本都能应用了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        /** java program to demonstrate*/</span><br><span class="line"></span><br><span class="line">        //Example 1</span><br><span class="line">        HashMap&lt;String, String&gt; classList = new HashMap();</span><br><span class="line">        classList.compute(&quot;class_1&quot;, (k, v) -&gt; (v == null) ? &quot;张三&quot; : v.concat(&quot; 张三&quot;));</span><br><span class="line">        System.out.println(classList);</span><br><span class="line">        classList.compute(&quot;class_1&quot;, (k, v) -&gt; v.concat(&quot; 李四&quot;));</span><br><span class="line">        System.out.println(classList);</span><br><span class="line"></span><br><span class="line">        /** output:</span><br><span class="line">        * &#123;class_1=张三&#125;</span><br><span class="line">        * &#123;class_1=张三 李四&#125;</span><br><span class="line">        */</span><br><span class="line"></span><br><span class="line">        //Example 2</span><br><span class="line">        HashMap&lt;String,Integer&gt; count = new HashMap&lt;&gt;();</span><br><span class="line">        for (int i = 0; i &lt; 3; i++) &#123;</span><br><span class="line">            count.compute(&quot;time&quot;, (k, v) -&gt; (v == null) ? 1 : v + 1);</span><br><span class="line">            System.out.println(count);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /** output:</span><br><span class="line">         * &#123;time=1&#125;</span><br><span class="line">         * &#123;time=2&#125;</span><br><span class="line">         * &#123;time=3&#125;</span><br><span class="line">         */</span><br><span class="line"></span><br><span class="line">        //Example 3</span><br><span class="line">        HashMap&lt;String,Integer&gt; exceptionExample = new HashMap&lt;&gt;();</span><br><span class="line">        exceptionExample.put(&quot;a&quot;,5);</span><br><span class="line">        try &#123;</span><br><span class="line">            exceptionExample.compute(null, (k, v) -&gt; v + 1);</span><br><span class="line">        &#125;catch (NullPointerException e)&#123;</span><br><span class="line">            System.out.println(&quot;Exception: &quot; + e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            exceptionExample.compute(&quot;b&quot;, (k, v) -&gt; v.intValue());</span><br><span class="line">        &#125;catch (NullPointerException e)&#123;</span><br><span class="line">            System.out.println(&quot;Exception: &quot; + e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /** output:</span><br><span class="line">         * Exception: java.lang.NullPointerException</span><br><span class="line">         * Exception: java.lang.NullPointerException</span><br><span class="line">         */</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;hashMap简介&quot;&gt;&lt;a href=&quot;#hashMap简介&quot; class=&quot;headerlink&quot; title=&quot;hashMap简介&quot;&gt;&lt;/a&gt;hashMap简介&lt;/h2&gt;&lt;p&gt; hashMap是基于Map的实现，并且允许null value和null key,
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
