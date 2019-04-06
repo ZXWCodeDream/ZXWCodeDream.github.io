@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>geek</title>
+  <title>读书小旺仔</title>
   
   <subtitle>Today a leader,tomorrow a leader</subtitle>
   <link href="/atom.xml" rel="self"/>
@@ -10,7 +10,7 @@
   <id>http://yoursite.com/</id>
   
   <author>
-    <name>zhengxingwang</name>
+    <name>读书小旺仔</name>
     
   </author>
   
